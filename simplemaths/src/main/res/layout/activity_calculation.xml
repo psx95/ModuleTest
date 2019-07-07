@@ -71,10 +71,10 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/et_number_1"
+            android:text="+"
             android:textColor="@android:color/black"
             android:textSize="30sp"
-            android:textStyle="bold"
-            tools:text="+" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/et_number_2"

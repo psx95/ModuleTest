@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class CalculationActivity extends AppCompatActivity {
 
@@ -39,12 +41,14 @@ public class CalculationActivity extends AppCompatActivity {
     public TextView operationResult;
 
     private SupportedOperations selectedOperation = SupportedOperations.ADDITION;
+    private Unbinder unbinder = null;
     private static final String TAG = CalculationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculation);
+        unbinder = ButterKnife.bind(this);
         operationSelect.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == opAdd.getId()) {
                 selectedOperation = SupportedOperations.ADDITION;
@@ -88,5 +92,11 @@ public class CalculationActivity extends AppCompatActivity {
             return;
         }
         Toast.makeText(SimpleMath.getApplicationInstance(), message, toastDuration).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }
