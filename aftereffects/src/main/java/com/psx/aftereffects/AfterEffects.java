@@ -45,9 +45,9 @@ public class AfterEffects {
 
     private static void startSuccessAnimation(int layoutID) {
         final FrameLayout rootView = activityAwareness.getCurrentActivity().findViewById(android.R.id.content);
-        View v = View.inflate(activityAwareness.getCurrentActivity(), layoutID, rootView);
-        v.bringToFront();
-        final LottieAnimationView lottieAnimationView = v.findViewById(R.id.animation_view);
+        final View[] v = {View.inflate(activityAwareness.getCurrentActivity(), layoutID, rootView)};
+        v[0].bringToFront();
+        final LottieAnimationView lottieAnimationView = v[0].findViewById(R.id.animation_view);
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -56,8 +56,9 @@ public class AfterEffects {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                lottieAnimationView.removeAllAnimatorListeners();
+                lottieAnimationView.removeAnimatorListener(this);
                 rootView.removeView(rootView.findViewById(R.id.success_view));
+                v[0] = null;
             }
 
             @Override
