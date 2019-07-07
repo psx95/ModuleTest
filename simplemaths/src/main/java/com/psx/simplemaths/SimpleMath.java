@@ -19,7 +19,7 @@ public class SimpleMath {
     private static void init(@NonNull Application applicationInstance) {
         SimpleMath.applicationInstance = applicationInstance;
         Intent intent = new Intent(applicationInstance.getApplicationContext(), CalculationActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         SimpleMath.applicationInstance.getApplicationContext().startActivity(intent);
     }
 
