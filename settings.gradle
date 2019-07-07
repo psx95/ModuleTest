@@ -1,1 +1,1 @@
-include ':app', ':simplemaths'
+include ':app', ':simplemaths', ':aftereffects'
