@@ -1,4 +1,4 @@
-package com.psx.moduletest;
+package com.psx.simplemaths;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.psx.moduletest", appContext.getPackageName());
+        assertEquals("com.psx.simplemaths.test", appContext.getPackageName());
     }
 }
