@@ -1,11 +1,10 @@
 package com.psx.aftereffects;
 
+import android.app.Activity;
 import android.app.Application;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 public interface ActivityAwareness {
-    AppCompatActivity getCurrentActivity();
+    Activity getCurrentActivity();
 
     Application getCurrentApplication();
 }

@@ -29,9 +29,10 @@ public class AfterEffects {
             return;
         }
         switch (operationPerformed) {
-            case "+":
+            case "ADDITION":
                 final FrameLayout rootView = activityAwareness.getCurrentActivity().findViewById(android.R.id.content);
                 View v = View.inflate(activityAwareness.getCurrentActivity(), R.layout.sucess_view, rootView);
+                v.bringToFront();
                 LottieAnimationView lottieAnimationView = v.findViewById(R.id.animation_view);
                 lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
                     @Override
@@ -55,11 +56,11 @@ public class AfterEffects {
                     }
                 });
                 break;
-            case "-":
+            case "SUBTRACTION":
                 break;
-            case "*":
+            case "MULTIPLICATION":
                 break;
-            case "/":
+            case "DIVISION":
                 break;
         }
     }
