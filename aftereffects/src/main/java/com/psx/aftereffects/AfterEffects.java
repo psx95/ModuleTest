@@ -11,12 +11,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.psx.commons.ExchangeObject;
 import com.psx.commons.MainApplication;
 import com.psx.commons.Modules;
+import com.psx.logging.MyLog;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class AfterEffects {
 
@@ -46,12 +46,12 @@ public class AfterEffects {
     public static void teardown() {
         mainApplication = null;
         compositeDisposable.clear();
-        Timber.d("After Effects Teardown");
+        MyLog.d("After Effects Teardown", AfterEffects.class.getSimpleName());
     }
 
     private static void showAnimation(String operationPerformed) {
         if (mainApplication == null) {
-            Timber.e("Activity Awareness is null");
+            MyLog.e("Activity Awareness is null", AfterEffects.class.getSimpleName());
             return;
         }
         switch (operationPerformed) {

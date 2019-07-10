@@ -8,9 +8,8 @@ import com.psx.aftereffects.AfterEffects;
 import com.psx.commons.MainApplication;
 import com.psx.commons.Modules;
 import com.psx.commons.RxBus;
+import com.psx.logging.MyLog;
 import com.psx.simplemaths.SimpleMath;
-
-import timber.log.Timber;
 
 public class MyApplication extends Application implements MainApplication {
 
@@ -20,8 +19,8 @@ public class MyApplication extends Application implements MainApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         eventBus = new RxBus();
+        MyLog.init(this);
         AfterEffects.init(this);
         SimpleMath.init(this);
         setupActivityLifecycleListeners();
