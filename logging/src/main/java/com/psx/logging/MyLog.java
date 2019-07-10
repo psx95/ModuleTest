@@ -47,7 +47,7 @@ public class MyLog {
     public static void d(String message, String className) {
         Timber.tag(className);
         Timber.d(message);
-        saveLogToDBAsync(message, className);
+        //saveLogToDBAsync(message, className);
     }
 
     public static void i(String message, String className) {

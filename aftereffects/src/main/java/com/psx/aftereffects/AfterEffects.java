@@ -56,12 +56,15 @@ public class AfterEffects {
         }
         switch (operationPerformed) {
             case "ADDITION":
+                MyLog.e("AFTER effects for addition", AfterEffects.class.getSimpleName());
                 startSuccessAnimation(R.layout.sucess_view_add);
                 break;
             case "SUBTRACTION":
+                MyLog.e("AFTER effects for subtraction", AfterEffects.class.getSimpleName());
                 startSuccessAnimation(R.layout.sucess_view_sub);
                 break;
             case "MULTIPLICATION":
+                MyLog.d("AFTER effects for deletion", AfterEffects.class.getSimpleName());
                 startSuccessAnimation(R.layout.sucess_view_mult);
                 break;
             case "DIVISION":

@@ -13,8 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import timber.log.Timber;
 
 public class UploadWorker extends Worker {
 
@@ -28,29 +28,28 @@ public class UploadWorker extends Worker {
     @Override
     public Result doWork() {
         // Do the work here--in this case, fetch logs from DB and upload logs.
-        JSONArray jsonArray = fetchLogs();
         // Indicate whether the task finished successfully with the Result
-        return uploadLogs(jsonArray);
+        Timber.d("Doing WORK");
+        fetchAndUploadLogs();
+        return Result.success();
     }
 
-    private JSONArray fetchLogs() {
-        final JSONArray jsonArray = new JSONArray();
-        try (Realm realm = Realm.getDefaultInstance()) {
-            RealmResults<RealmLogs> realmLogs = realm.where(RealmLogs.class).findAllAsync();
-            realmLogs.addChangeListener(new RealmChangeListener<RealmResults<RealmLogs>>() {
-                @Override
-                public void onChange(@NotNull RealmResults<RealmLogs> realmLogs) {
-                    if (realmLogs.isLoaded()) {
-                        // LOGS Loading is successul, upload
-                        for (RealmLogs logs : realmLogs) {
-                            JSONObject jsonObject = convertRealmLogToJsonObject(logs);
-                            jsonArray.put(jsonObject);
-                        }
+    private void fetchAndUploadLogs() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try (Realm realm = Realm.getDefaultInstance()) {
+                    RealmResults<RealmLogs> realmLogs = realm.where(RealmLogs.class).findAll();
+                    final JSONArray jsonArray = new JSONArray();
+                    for (RealmLogs logs : realmLogs) {
+                        JSONObject jsonObject = convertRealmLogToJsonObject(logs);
+                        jsonArray.put(jsonObject);
                     }
+                    uploadLogs(jsonArray);
                 }
-            });
-        }
-        return jsonArray;
+            }
+        });
+        thread.start();
     }
 
     //TODO :  Write method to convert
