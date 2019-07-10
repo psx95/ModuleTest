@@ -8,22 +8,40 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.psx.commons.MainApplication;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class AfterEffects {
 
-    private static ActivityAwareness activityAwareness = null;
+    private static MainApplication mainApplication = null;
+    private static CompositeDisposable compositeDisposable = new CompositeDisposable();
     private static final String TAG = AfterEffects.class.getSimpleName();
 
-    public static void init(@NonNull ActivityAwareness activityAwareness) {
-        AfterEffects.activityAwareness = activityAwareness;
+    public static void init(@NonNull MainApplication applicationInstance) {
+        AfterEffects.mainApplication = applicationInstance;
+        compositeDisposable.add(applicationInstance.getEventBus()
+                .toObservable().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object operationPerformedString) {
+                        if (operationPerformedString instanceof String)
+                            showAnimation((String) operationPerformedString);
+                    }
+                }));
     }
 
     public static void teardown() {
-        activityAwareness = null;
+        mainApplication = null;
+        compositeDisposable.clear();
     }
 
     public static void showAnimation(String operationPerformed) {
-        if (activityAwareness == null) {
+        if (mainApplication == null) {
             Log.e(TAG, "Activity Awareness is null");
             return;
         }
@@ -44,8 +62,8 @@ public class AfterEffects {
     }
 
     private static void startSuccessAnimation(int layoutID) {
-        final FrameLayout rootView = activityAwareness.getCurrentActivity().findViewById(android.R.id.content);
-        final View[] v = {View.inflate(activityAwareness.getCurrentActivity(), layoutID, rootView)};
+        final FrameLayout rootView = mainApplication.getCurrentActivity().findViewById(android.R.id.content);
+        final View[] v = {View.inflate(mainApplication.getCurrentActivity(), layoutID, rootView)};
         v[0].bringToFront();
         final LottieAnimationView lottieAnimationView = v[0].findViewById(R.id.animation_view);
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {

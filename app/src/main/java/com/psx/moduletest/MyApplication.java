@@ -4,19 +4,22 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-import com.psx.aftereffects.ActivityAwareness;
 import com.psx.aftereffects.AfterEffects;
+import com.psx.commons.MainApplication;
+import com.psx.commons.RxBus;
 import com.psx.simplemaths.SimpleMath;
 
-public class MyApplication extends Application implements ActivityAwareness {
+public class MyApplication extends Application implements MainApplication {
 
     private Activity currentActivity = null;
+    private RxBus eventBus = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        eventBus = new RxBus();
         AfterEffects.init(this);
-        SimpleMath.init(this, AfterEffects::showAnimation);
+        SimpleMath.init(this);
         setupActivityLifecycleListeners();
     }
 
@@ -28,6 +31,11 @@ public class MyApplication extends Application implements ActivityAwareness {
     @Override
     public Application getCurrentApplication() {
         return this;
+    }
+
+    @Override
+    public RxBus getEventBus() {
+        return bus();
     }
 
     private void setupActivityLifecycleListeners() {
@@ -67,5 +75,9 @@ public class MyApplication extends Application implements ActivityAwareness {
 
             }
         });
+    }
+
+    private RxBus bus() {
+        return eventBus;
     }
 }

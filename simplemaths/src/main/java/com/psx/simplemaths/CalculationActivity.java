@@ -70,7 +70,7 @@ public class CalculationActivity extends AppCompatActivity {
         if (readyForCalculation()) {
             double result = SimpleMath.performCalculation(Double.parseDouble(operandOne.getText().toString()), Double.parseDouble(operandTwo.getText().toString()), selectedOperation);
             operationResult.setText(String.valueOf(result));
-            SimpleMath.getSimpleMathCallbacks().onCalculationCompleted(selectedOperation.toString());
+            SimpleMath.sendCalculationCompleteEvent(selectedOperation.toString());
         }
     }
 
@@ -91,7 +91,7 @@ public class CalculationActivity extends AppCompatActivity {
             Log.e(TAG, "Application Instance is Null.");
             return;
         }
-        Toast.makeText(SimpleMath.getApplicationInstance(), message, toastDuration).show();
+        Toast.makeText(SimpleMath.getApplicationInstance().getCurrentApplication(), message, toastDuration).show();
     }
 
     @Override
