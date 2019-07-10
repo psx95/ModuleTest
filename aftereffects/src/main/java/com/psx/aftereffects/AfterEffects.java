@@ -8,7 +8,9 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.psx.commons.ExchangeObject;
 import com.psx.commons.MainApplication;
+import com.psx.commons.Modules;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -28,9 +30,15 @@ public class AfterEffects {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Object operationPerformedString) {
-                        if (operationPerformedString instanceof String)
-                            showAnimation((String) operationPerformedString);
+                    public void accept(Object object) {
+                        if (object instanceof ExchangeObject) {
+                            ExchangeObject exchangeObject = (ExchangeObject) object;
+                            if (exchangeObject.to == Modules.AFTER_EFFECTS) {
+                                if (exchangeObject.from == Modules.SIMPLE_MATHS) {
+                                    showAnimation((String) exchangeObject.data[0]);
+                                }
+                            }
+                        }
                     }
                 }));
     }
@@ -40,7 +48,7 @@ public class AfterEffects {
         compositeDisposable.clear();
     }
 
-    public static void showAnimation(String operationPerformed) {
+    private static void showAnimation(String operationPerformed) {
         if (mainApplication == null) {
             Log.e(TAG, "Activity Awareness is null");
             return;

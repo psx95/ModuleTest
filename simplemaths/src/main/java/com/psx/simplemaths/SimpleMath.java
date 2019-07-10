@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
+import com.psx.commons.ExchangeObject;
 import com.psx.commons.MainApplication;
 
 public class SimpleMath {
@@ -35,7 +36,7 @@ public class SimpleMath {
         return applicationInstance;
     }
 
-    static void sendCalculationCompleteEvent(String calculationPerformed) {
-        SimpleMath.applicationInstance.getEventBus().send(calculationPerformed);
+    static void sendCalculationCompleteEvent(ExchangeObject exchangeObject) {
+        SimpleMath.applicationInstance.getEventBus().send(exchangeObject);
     }
 }

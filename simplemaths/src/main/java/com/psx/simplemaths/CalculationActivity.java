@@ -12,6 +12,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.psx.commons.ExchangeObject;
+import com.psx.commons.Modules;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -70,8 +73,14 @@ public class CalculationActivity extends AppCompatActivity {
         if (readyForCalculation()) {
             double result = SimpleMath.performCalculation(Double.parseDouble(operandOne.getText().toString()), Double.parseDouble(operandTwo.getText().toString()), selectedOperation);
             operationResult.setText(String.valueOf(result));
-            SimpleMath.sendCalculationCompleteEvent(selectedOperation.toString());
+            SimpleMath.sendCalculationCompleteEvent(createExchangeObjectToSend(selectedOperation));
         }
+    }
+
+    private ExchangeObject createExchangeObjectToSend(SupportedOperations selectedOperation) {
+        Object[] data = {selectedOperation.toString()};
+        return new ExchangeObject(data, "RESULT",
+                Modules.AFTER_EFFECTS, Modules.SIMPLE_MATHS);
     }
 
     public boolean readyForCalculation() {
