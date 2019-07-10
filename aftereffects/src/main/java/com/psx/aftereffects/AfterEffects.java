@@ -8,23 +8,50 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.psx.commons.ExchangeObject;
+import com.psx.commons.MainApplication;
+import com.psx.commons.Modules;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class AfterEffects {
 
-    private static ActivityAwareness activityAwareness = null;
-    private static final String TAG = AfterEffects.class.getSimpleName();
+    private static MainApplication mainApplication = null;
+    private static CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public static void init(@NonNull ActivityAwareness activityAwareness) {
-        AfterEffects.activityAwareness = activityAwareness;
+    public static void init(@NonNull MainApplication applicationInstance) {
+        AfterEffects.mainApplication = applicationInstance;
+        compositeDisposable.add(applicationInstance.getEventBus()
+                .toObservable().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object object) {
+                        if (object instanceof ExchangeObject) {
+                            ExchangeObject exchangeObject = (ExchangeObject) object;
+                            if (exchangeObject.to == Modules.AFTER_EFFECTS) {
+                                if (exchangeObject.from == Modules.SIMPLE_MATHS) {
+                                    showAnimation((String) exchangeObject.data[0]);
+                                }
+                            }
+                        }
+                    }
+                }));
     }
 
     public static void teardown() {
-        activityAwareness = null;
+        mainApplication = null;
+        compositeDisposable.clear();
+        Timber.d("After Effects Teardown");
     }
 
-    public static void showAnimation(String operationPerformed) {
-        if (activityAwareness == null) {
-            Log.e(TAG, "Activity Awareness is null");
+    private static void showAnimation(String operationPerformed) {
+        if (mainApplication == null) {
+            Timber.e("Activity Awareness is null");
             return;
         }
         switch (operationPerformed) {
@@ -44,8 +71,8 @@ public class AfterEffects {
     }
 
     private static void startSuccessAnimation(int layoutID) {
-        final FrameLayout rootView = activityAwareness.getCurrentActivity().findViewById(android.R.id.content);
-        final View[] v = {View.inflate(activityAwareness.getCurrentActivity(), layoutID, rootView)};
+        final FrameLayout rootView = mainApplication.getCurrentActivity().findViewById(android.R.id.content);
+        final View[] v = {View.inflate(mainApplication.getCurrentActivity(), layoutID, rootView)};
         v[0].bringToFront();
         final LottieAnimationView lottieAnimationView = v[0].findViewById(R.id.animation_view);
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {

@@ -1,26 +1,21 @@
 package com.psx.simplemaths;
 
-import android.app.Application;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
+import com.psx.commons.ExchangeObject;
+import com.psx.commons.MainApplication;
+
 public class SimpleMath {
 
-    private static Application applicationInstance = null;
-    private static SimpleMathCallbacks simpleMathCallbacks = null;
+    private static MainApplication applicationInstance = null;
 
-
-    public static void init(@NonNull Application applicationInstance, @NonNull SimpleMathCallbacks callbacks) {
-        SimpleMath.simpleMathCallbacks = callbacks;
-        init(applicationInstance);
-    }
-
-    private static void init(@NonNull Application applicationInstance) {
+    public static void init(@NonNull MainApplication applicationInstance) {
         SimpleMath.applicationInstance = applicationInstance;
-        Intent intent = new Intent(applicationInstance.getApplicationContext(), CalculationActivity.class);
+        Intent intent = new Intent(applicationInstance.getCurrentApplication(), CalculationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        SimpleMath.applicationInstance.getApplicationContext().startActivity(intent);
+        SimpleMath.applicationInstance.getCurrentApplication().startActivity(intent);
     }
 
     static double performCalculation(double op1, double op2, SupportedOperations supportedOperations) {
@@ -37,11 +32,15 @@ public class SimpleMath {
         return 0;
     }
 
-    static Application getApplicationInstance() {
+    static MainApplication getApplicationInstance() {
         return applicationInstance;
     }
 
-    static SimpleMathCallbacks getSimpleMathCallbacks() {
-        return simpleMathCallbacks;
+    static void sendCalculationCompleteEvent(ExchangeObject exchangeObject) {
+        SimpleMath.applicationInstance.getEventBus().send(exchangeObject);
+    }
+
+    static void teardown() {
+        applicationInstance = null;
     }
 }

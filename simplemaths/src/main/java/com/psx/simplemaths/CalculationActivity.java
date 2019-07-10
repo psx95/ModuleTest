@@ -12,9 +12,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.psx.commons.ExchangeObject;
+import com.psx.commons.Modules;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 public class CalculationActivity extends AppCompatActivity {
 
@@ -42,7 +46,6 @@ public class CalculationActivity extends AppCompatActivity {
 
     private SupportedOperations selectedOperation = SupportedOperations.ADDITION;
     private Unbinder unbinder = null;
-    private static final String TAG = CalculationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +73,14 @@ public class CalculationActivity extends AppCompatActivity {
         if (readyForCalculation()) {
             double result = SimpleMath.performCalculation(Double.parseDouble(operandOne.getText().toString()), Double.parseDouble(operandTwo.getText().toString()), selectedOperation);
             operationResult.setText(String.valueOf(result));
-            SimpleMath.getSimpleMathCallbacks().onCalculationCompleted(selectedOperation.toString());
+            SimpleMath.sendCalculationCompleteEvent(createExchangeObjectToSend(selectedOperation));
         }
+    }
+
+    private ExchangeObject createExchangeObjectToSend(SupportedOperations selectedOperation) {
+        Object[] data = {selectedOperation.toString()};
+        return new ExchangeObject(data, "RESULT",
+                Modules.AFTER_EFFECTS, Modules.SIMPLE_MATHS);
     }
 
     public boolean readyForCalculation() {
@@ -88,15 +97,17 @@ public class CalculationActivity extends AppCompatActivity {
 
     public void showToast(String message, int toastDuration) {
         if (SimpleMath.getApplicationInstance() == null) {
-            Log.e(TAG, "Application Instance is Null.");
+            Timber.e("Application Instance is Null.");
             return;
         }
-        Toast.makeText(SimpleMath.getApplicationInstance(), message, toastDuration).show();
+        Toast.makeText(SimpleMath.getApplicationInstance().getCurrentApplication(), message, toastDuration).show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        SimpleMath.getApplicationInstance().teardownModule(Modules.AFTER_EFFECTS);
+        SimpleMath.teardown();
         unbinder.unbind();
     }
 }

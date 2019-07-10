@@ -1,10 +1,15 @@
-package com.psx.aftereffects;
+package com.psx.commons;
 
 import android.app.Activity;
 import android.app.Application;
 
-public interface ActivityAwareness {
+public interface MainApplication {
+
     Activity getCurrentActivity();
 
     Application getCurrentApplication();
+
+    RxBus getEventBus();
+
+    void teardownModule(Modules module);
 }
