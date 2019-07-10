@@ -18,6 +18,7 @@ import com.psx.commons.Modules;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 
 public class CalculationActivity extends AppCompatActivity {
 
@@ -45,7 +46,6 @@ public class CalculationActivity extends AppCompatActivity {
 
     private SupportedOperations selectedOperation = SupportedOperations.ADDITION;
     private Unbinder unbinder = null;
-    private static final String TAG = CalculationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class CalculationActivity extends AppCompatActivity {
 
     public void showToast(String message, int toastDuration) {
         if (SimpleMath.getApplicationInstance() == null) {
-            Log.e(TAG, "Application Instance is Null.");
+            Timber.e("Application Instance is Null.");
             return;
         }
         Toast.makeText(SimpleMath.getApplicationInstance().getCurrentApplication(), message, toastDuration).show();

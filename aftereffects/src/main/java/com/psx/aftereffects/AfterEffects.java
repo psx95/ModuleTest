@@ -16,12 +16,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class AfterEffects {
 
     private static MainApplication mainApplication = null;
     private static CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private static final String TAG = AfterEffects.class.getSimpleName();
 
     public static void init(@NonNull MainApplication applicationInstance) {
         AfterEffects.mainApplication = applicationInstance;
@@ -46,12 +46,12 @@ public class AfterEffects {
     public static void teardown() {
         mainApplication = null;
         compositeDisposable.clear();
-        Log.d(TAG, "After Effects TearDown");
+        Timber.d("After Effects Teardown");
     }
 
     private static void showAnimation(String operationPerformed) {
         if (mainApplication == null) {
-            Log.e(TAG, "Activity Awareness is null");
+            Timber.e("Activity Awareness is null");
             return;
         }
         switch (operationPerformed) {
