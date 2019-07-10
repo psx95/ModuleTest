@@ -39,4 +39,8 @@ public class SimpleMath {
     static void sendCalculationCompleteEvent(ExchangeObject exchangeObject) {
         SimpleMath.applicationInstance.getEventBus().send(exchangeObject);
     }
+
+    static void teardown() {
+        applicationInstance = null;
+    }
 }

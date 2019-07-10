@@ -46,6 +46,7 @@ public class AfterEffects {
     public static void teardown() {
         mainApplication = null;
         compositeDisposable.clear();
+        Log.d(TAG, "After Effects TearDown");
     }
 
     private static void showAnimation(String operationPerformed) {

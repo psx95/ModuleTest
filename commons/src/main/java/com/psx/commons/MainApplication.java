@@ -10,4 +10,6 @@ public interface MainApplication {
     Application getCurrentApplication();
 
     RxBus getEventBus();
+
+    void teardownModule(Modules module);
 }

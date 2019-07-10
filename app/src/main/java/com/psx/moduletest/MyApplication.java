@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.psx.aftereffects.AfterEffects;
 import com.psx.commons.MainApplication;
+import com.psx.commons.Modules;
 import com.psx.commons.RxBus;
 import com.psx.simplemaths.SimpleMath;
 
@@ -36,6 +37,17 @@ public class MyApplication extends Application implements MainApplication {
     @Override
     public RxBus getEventBus() {
         return bus();
+    }
+
+    @Override
+    public void teardownModule(Modules module) {
+        switch (module) {
+            case AFTER_EFFECTS:
+                AfterEffects.teardown();
+                break;
+            case SIMPLE_MATHS:
+                break;
+        }
     }
 
     private void setupActivityLifecycleListeners() {

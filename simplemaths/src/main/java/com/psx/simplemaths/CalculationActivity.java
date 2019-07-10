@@ -106,6 +106,8 @@ public class CalculationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        SimpleMath.getApplicationInstance().teardownModule(Modules.AFTER_EFFECTS);
+        SimpleMath.teardown();
         unbinder.unbind();
     }
 }
