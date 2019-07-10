@@ -1,1 +1,1 @@
-include ':app', ':simplemaths', ':aftereffects', ':commons'
+include ':app', ':simplemaths', ':aftereffects', ':commons', ':logging'
