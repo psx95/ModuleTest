@@ -10,6 +10,8 @@ import com.psx.commons.Modules;
 import com.psx.commons.RxBus;
 import com.psx.simplemaths.SimpleMath;
 
+import timber.log.Timber;
+
 public class MyApplication extends Application implements MainApplication {
 
     private Activity currentActivity = null;
@@ -18,6 +20,7 @@ public class MyApplication extends Application implements MainApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         eventBus = new RxBus();
         AfterEffects.init(this);
         SimpleMath.init(this);
