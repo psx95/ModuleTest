@@ -6,12 +6,18 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.androidnetworking.common.Priority;
 import com.psx.logging.RealmDB.RealmLogs;
+import com.rx2androidnetworking.Rx2AndroidNetworking;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -57,15 +63,35 @@ public class UploadWorker extends Worker {
         return new JSONObject();
     }
 
-    //TODO : Write method to upload Logs
-    private Result uploadLogs(JSONArray jsonArray) {
-        Result result = Result.success();
-        // TODO: Make it conditional, based on API Failure
-        boolean isSuccess = true;
-        if (isSuccess) {
-            deleteAllLogsFromRealm();
-        }
-        return Result.success();
+    private void uploadLogs(JSONArray jsonArray) {
+        Rx2AndroidNetworking.post(MyLog.uploadUrl)
+                .addJSONArrayBody(jsonArray)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject jsonObject) {
+                        // TODO : Parse the response from the server
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        MyLog.e(e.getMessage(), UploadWorker.class.getSimpleName());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        deleteAllLogsFromRealm();
+                    }
+                });
     }
 
     private void deleteAllLogsFromRealm() {
