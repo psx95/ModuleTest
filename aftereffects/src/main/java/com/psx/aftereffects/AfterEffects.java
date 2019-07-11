@@ -46,25 +46,25 @@ public class AfterEffects {
     public static void teardown() {
         mainApplication = null;
         compositeDisposable.clear();
-        MyLog.d("After Effects Teardown", AfterEffects.class.getSimpleName());
+        MyLog.d("After Effects Teardown", AfterEffects.class);
     }
 
     private static void showAnimation(String operationPerformed) {
         if (mainApplication == null) {
-            MyLog.e("Activity Awareness is null", AfterEffects.class.getSimpleName());
+            MyLog.e("Activity Awareness is null", AfterEffects.class);
             return;
         }
         switch (operationPerformed) {
             case "ADDITION":
-                MyLog.e("AFTER effects for addition", AfterEffects.class.getSimpleName());
+                MyLog.e("AFTER effects for addition", AfterEffects.class);
                 startSuccessAnimation(R.layout.sucess_view_add);
                 break;
             case "SUBTRACTION":
-                MyLog.e("AFTER effects for subtraction", AfterEffects.class.getSimpleName());
+                MyLog.e("AFTER effects for subtraction", AfterEffects.class);
                 startSuccessAnimation(R.layout.sucess_view_sub);
                 break;
             case "MULTIPLICATION":
-                MyLog.d("AFTER effects for deletion", AfterEffects.class.getSimpleName());
+                MyLog.d("AFTER effects for deletion", AfterEffects.class);
                 startSuccessAnimation(R.layout.sucess_view_mult);
                 break;
             case "DIVISION":

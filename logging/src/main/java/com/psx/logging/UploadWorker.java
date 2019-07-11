@@ -84,7 +84,7 @@ public class UploadWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
-                        MyLog.e(e.getMessage(), UploadWorker.class.getSimpleName());
+                        MyLog.e(e.getMessage(), UploadWorker.class);
                     }
 
                     @Override

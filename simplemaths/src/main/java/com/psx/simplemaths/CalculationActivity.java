@@ -96,7 +96,7 @@ public class CalculationActivity extends AppCompatActivity {
 
     public void showToast(String message, int toastDuration) {
         if (SimpleMath.getApplicationInstance() == null) {
-            MyLog.e("Application Instance is Null.", CalculationActivity.class.getSimpleName());
+            MyLog.e("Application Instance is Null.", CalculationActivity.class);
             return;
         }
         Toast.makeText(SimpleMath.getApplicationInstance().getCurrentApplication(), message, toastDuration).show();

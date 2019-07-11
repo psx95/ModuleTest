@@ -19,6 +19,7 @@ import timber.log.Timber;
 
 public class MyLog {
 
+    static String appName = "N/A";
     private static MainApplication applicationInstance;
     static String uploadUrl;
     private static RealmConfiguration libraryConfig;
@@ -28,9 +29,10 @@ public class MyLog {
 
     public static void init(MainApplication applicationInstance, String upload_url, LoggingLevel loggingLevel) {
         MyLog.applicationInstance = applicationInstance;
-        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         MyLog.uploadUrl = upload_url;
         MyLog.loggingLevel = loggingLevel;
+        MyLog.appName = initializeAppName();
+        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         Realm.init(applicationInstance.getCurrentApplication());
         libraryConfig = new RealmConfiguration.Builder()
                 .name("library.realm")
@@ -39,41 +41,41 @@ public class MyLog {
         scheduleUploadJob();
     }
 
-    public static void e(String message, String className) {
-        Timber.tag(className);
+    public static void e(String message, Class clazz) {
+        Timber.tag(clazz.getSimpleName());
         Timber.e(message);
         if (loggingLevel == LoggingLevel.ERRORS_ONLY || loggingLevel == LoggingLevel.VERBOSE)
-            saveLogToDBAsync(message, className);
+            saveLogToDBAsync(message, clazz);
     }
 
-    public static void d(String message, String className) {
-        Timber.tag(className);
+    public static void d(String message, Class clazz) {
+        Timber.tag(clazz.getSimpleName());
         Timber.d(message);
         if (loggingLevel == LoggingLevel.VERBOSE || loggingLevel == LoggingLevel.DEBUG_INFO_ONLY || loggingLevel == LoggingLevel.DEBUG_ONLY)
-            saveLogToDBAsync(message, className);
+            saveLogToDBAsync(message, clazz);
     }
 
-    public static void i(String message, String className) {
-        Timber.tag(className);
+    public static void i(String message, Class clazz) {
+        Timber.tag(clazz.getSimpleName());
         Timber.i(message);
         if (loggingLevel == LoggingLevel.VERBOSE || loggingLevel == LoggingLevel.DEBUG_INFO_ONLY)
-            saveLogToDBAsync(message, className);
+            saveLogToDBAsync(message, clazz);
     }
 
-    public static void v(String message, String className) {
-        Timber.tag(className);
+    public static void v(String message, Class clazz) {
+        Timber.tag(clazz.getSimpleName());
         Timber.v(message);
         if (loggingLevel == LoggingLevel.VERBOSE)
-            saveLogToDBAsync(message, className);
+            saveLogToDBAsync(message, clazz);
     }
 
-    private static void saveLogToDBAsync(final String message, final String className) {
+    private static void saveLogToDBAsync(final String message, final Class clazz) {
         try (Realm realm = Realm.getInstance(libraryConfig)) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(@NotNull Realm realm) {
                     RealmLogs realmLogs = realm.createObject(RealmLogs.class, System.currentTimeMillis());
-                    realmLogs.className = className;
+                    realmLogs.className = clazz.getCanonicalName();
                     realmLogs.message = message;
                     realm.insertOrUpdate(realmLogs);
                 }
@@ -103,5 +105,10 @@ public class MyLog {
 
     static RealmConfiguration getLibraryConfig() {
         return libraryConfig;
+    }
+
+    private static String initializeAppName() {
+        int stringId = applicationInstance.getCurrentApplication().getApplicationInfo().labelRes;
+        return stringId == 0 ? applicationInstance.getCurrentApplication().getApplicationInfo().nonLocalizedLabel.toString() : applicationInstance.getCurrentApplication().getApplicationContext().getString(stringId);
     }
 }
