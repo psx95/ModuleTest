@@ -1,9 +1,8 @@
 package com.psx.logging;
 
-import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
 import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.psx.commons.MainApplication;
@@ -21,10 +20,11 @@ import timber.log.Timber;
 public class MyLog {
 
     private static MainApplication applicationInstance;
-    private static String uploadUrl;
+    static String uploadUrl;
     private static RealmConfiguration libraryConfig;
     private static LoggingLevel loggingLevel;
-    private static final long REPEAT_INTERVAL_MINS_UPLOAD_TASK = 15; //TODO : Change it to 24
+    private static final long INITIAL_DELAY_SECONDS_ONE_TIME_UPLOAD = 10;
+    private static final String UPLOAD_TASK_NAME = "logs_upload";
 
     public static void init(MainApplication applicationInstance, String upload_url, LoggingLevel loggingLevel) {
         MyLog.applicationInstance = applicationInstance;
@@ -83,26 +83,25 @@ public class MyLog {
 
     //Note: The minimum repeat interval that can be defined is 15 minutes (same as the JobScheduler API).
     private static void scheduleUploadJob() {
+        Timber.d("Scheduling task");
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .setRequiresBatteryNotLow(true)
                 .build();
-        // TODO : Change the Repeat interval to HOURS (24)
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(UploadWorker.class, REPEAT_INTERVAL_MINS_UPLOAD_TASK, TimeUnit.MINUTES)
+        OneTimeWorkRequest uploadLogsWorkRequest = new OneTimeWorkRequest.Builder(UploadWorker.class)
                 .setConstraints(constraints)
-                .setBackoffCriteria(BackoffPolicy.LINEAR,
-                        PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
-                        TimeUnit.MILLISECONDS)
+                .setInitialDelay(INITIAL_DELAY_SECONDS_ONE_TIME_UPLOAD, TimeUnit.SECONDS)
                 .build();
 
-        WorkManager.getInstance().enqueue(periodicWorkRequest);
+        WorkManager.getInstance().cancelAllWork();
+        WorkManager.getInstance().enqueue(uploadLogsWorkRequest);
     }
 
     public static MainApplication getApplicationInstance() {
         return applicationInstance;
     }
 
-    public static RealmConfiguration getLibraryConfig() {
+    static RealmConfiguration getLibraryConfig() {
         return libraryConfig;
     }
 }
