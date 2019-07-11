@@ -1,10 +1,7 @@
 package com.psx.simplemaths;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -12,13 +9,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.psx.commons.ExchangeObject;
 import com.psx.commons.Modules;
+import com.psx.logging.Grove;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 
 public class CalculationActivity extends AppCompatActivity {
 
@@ -97,7 +96,7 @@ public class CalculationActivity extends AppCompatActivity {
 
     public void showToast(String message, int toastDuration) {
         if (SimpleMath.getApplicationInstance() == null) {
-            Timber.e("Application Instance is Null.");
+            Grove.e("Application Instance is Null.", CalculationActivity.class);
             return;
         }
         Toast.makeText(SimpleMath.getApplicationInstance().getCurrentApplication(), message, toastDuration).show();

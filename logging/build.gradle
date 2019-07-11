@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 28
@@ -26,13 +27,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(":commons")
-    implementation project(":logging")
+
     implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "androidx.work:work-runtime:2.0.1"
+    implementation "androidx.work:work-rxjava2:2.0.1"
     testImplementation 'junit:junit:4.12'
-    implementation "com.airbnb.android:lottie:3.0.7"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    //RxJava & RxAndroid
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+    //Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    //Fast Android Networking
+    implementation 'com.amitshekhar.android:jackson-android-networking:1.0.2'
+    implementation 'com.amitshekhar.android:rx2-android-networking:1.0.2'
 }

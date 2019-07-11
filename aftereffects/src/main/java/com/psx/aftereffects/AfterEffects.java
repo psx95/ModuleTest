@@ -1,7 +1,6 @@
 package com.psx.aftereffects;
 
 import android.animation.Animator;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -11,12 +10,12 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.psx.commons.ExchangeObject;
 import com.psx.commons.MainApplication;
 import com.psx.commons.Modules;
+import com.psx.logging.Grove;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class AfterEffects {
 
@@ -46,22 +45,25 @@ public class AfterEffects {
     public static void teardown() {
         mainApplication = null;
         compositeDisposable.clear();
-        Timber.d("After Effects Teardown");
+        Grove.d("After Effects Teardown", AfterEffects.class);
     }
 
     private static void showAnimation(String operationPerformed) {
         if (mainApplication == null) {
-            Timber.e("Activity Awareness is null");
+            Grove.e("Activity Awareness is null", AfterEffects.class);
             return;
         }
         switch (operationPerformed) {
             case "ADDITION":
+                Grove.e("AFTER effects for addition", AfterEffects.class);
                 startSuccessAnimation(R.layout.sucess_view_add);
                 break;
             case "SUBTRACTION":
+                Grove.e("AFTER effects for subtraction", AfterEffects.class);
                 startSuccessAnimation(R.layout.sucess_view_sub);
                 break;
             case "MULTIPLICATION":
+                Grove.d("AFTER effects for deletion", AfterEffects.class);
                 startSuccessAnimation(R.layout.sucess_view_mult);
                 break;
             case "DIVISION":

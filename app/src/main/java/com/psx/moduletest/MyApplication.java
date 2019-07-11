@@ -5,12 +5,13 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.psx.aftereffects.AfterEffects;
+import com.psx.commons.Constants;
 import com.psx.commons.MainApplication;
 import com.psx.commons.Modules;
 import com.psx.commons.RxBus;
+import com.psx.logging.LoggingLevel;
+import com.psx.logging.Grove;
 import com.psx.simplemaths.SimpleMath;
-
-import timber.log.Timber;
 
 public class MyApplication extends Application implements MainApplication {
 
@@ -20,8 +21,8 @@ public class MyApplication extends Application implements MainApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         eventBus = new RxBus();
+        Grove.init(this, Constants.LOGS_UPLOAD_API, LoggingLevel.ERRORS_ONLY);
         AfterEffects.init(this);
         SimpleMath.init(this);
         setupActivityLifecycleListeners();
