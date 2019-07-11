@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.psx.commons.ExchangeObject;
 import com.psx.commons.Modules;
-import com.psx.logging.MyLog;
+import com.psx.logging.Grove;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,7 +96,7 @@ public class CalculationActivity extends AppCompatActivity {
 
     public void showToast(String message, int toastDuration) {
         if (SimpleMath.getApplicationInstance() == null) {
-            MyLog.e("Application Instance is Null.", CalculationActivity.class);
+            Grove.e("Application Instance is Null.", CalculationActivity.class);
             return;
         }
         Toast.makeText(SimpleMath.getApplicationInstance().getCurrentApplication(), message, toastDuration).show();

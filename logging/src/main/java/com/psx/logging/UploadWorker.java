@@ -44,7 +44,7 @@ public class UploadWorker extends Worker {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try (Realm realm = Realm.getInstance(MyLog.getLibraryConfig())) {
+                try (Realm realm = Realm.getInstance(Grove.getLibraryConfig())) {
                     RealmResults<RealmLogs> realmLogs = realm.where(RealmLogs.class).findAll();
                     final JSONArray jsonArray = new JSONArray();
                     for (RealmLogs logs : realmLogs) {
@@ -64,7 +64,7 @@ public class UploadWorker extends Worker {
     }
 
     private void uploadLogs(JSONArray jsonArray) {
-        Rx2AndroidNetworking.post(MyLog.uploadUrl)
+        Rx2AndroidNetworking.post(Grove.uploadUrl)
                 .addJSONArrayBody(jsonArray)
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -84,7 +84,7 @@ public class UploadWorker extends Worker {
 
                     @Override
                     public void onError(Throwable e) {
-                        MyLog.e(e.getMessage(), UploadWorker.class);
+                        Grove.e(e.getMessage(), UploadWorker.class);
                     }
 
                     @Override
@@ -95,7 +95,7 @@ public class UploadWorker extends Worker {
     }
 
     private void deleteAllLogsFromRealm() {
-        try (Realm realm = Realm.getInstance(MyLog.getLibraryConfig())) {
+        try (Realm realm = Realm.getInstance(Grove.getLibraryConfig())) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(@NotNull Realm realm) {

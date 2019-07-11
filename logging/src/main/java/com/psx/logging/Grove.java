@@ -17,7 +17,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
-public class MyLog {
+public class Grove {
 
     static String appName = "N/A";
     private static MainApplication applicationInstance;
@@ -28,10 +28,10 @@ public class MyLog {
     private static final String UPLOAD_TASK_NAME = "logs_upload";
 
     public static void init(MainApplication applicationInstance, String upload_url, LoggingLevel loggingLevel) {
-        MyLog.applicationInstance = applicationInstance;
-        MyLog.uploadUrl = upload_url;
-        MyLog.loggingLevel = loggingLevel;
-        MyLog.appName = initializeAppName();
+        Grove.applicationInstance = applicationInstance;
+        Grove.uploadUrl = upload_url;
+        Grove.loggingLevel = loggingLevel;
+        Grove.appName = initializeAppName();
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         Realm.init(applicationInstance.getCurrentApplication());
         libraryConfig = new RealmConfiguration.Builder()
