@@ -5,9 +5,11 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.psx.aftereffects.AfterEffects;
+import com.psx.commons.Constants;
 import com.psx.commons.MainApplication;
 import com.psx.commons.Modules;
 import com.psx.commons.RxBus;
+import com.psx.logging.LoggingLevel;
 import com.psx.logging.MyLog;
 import com.psx.simplemaths.SimpleMath;
 
@@ -20,7 +22,7 @@ public class MyApplication extends Application implements MainApplication {
     public void onCreate() {
         super.onCreate();
         eventBus = new RxBus();
-        MyLog.init(this);
+        MyLog.init(this, Constants.LOGS_UPLOAD_API, LoggingLevel.ERRORS_ONLY);
         AfterEffects.init(this);
         SimpleMath.init(this);
         setupActivityLifecycleListeners();

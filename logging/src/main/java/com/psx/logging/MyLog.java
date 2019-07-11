@@ -18,48 +18,53 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
-//TODO : Remove Realm's Set DefaultInstance
 public class MyLog {
 
-    public static final String UPLOAD_URL = "https://sometesturl.com/upload_logs";
     private static MainApplication applicationInstance;
+    private static String uploadUrl;
     private static RealmConfiguration libraryConfig;
-    private static final long REPEAT_INTERVAL_HRS_UPLOAD_TASK = 5; //TODO : Change it to 24
+    private static LoggingLevel loggingLevel;
+    private static final long REPEAT_INTERVAL_MINS_UPLOAD_TASK = 15; //TODO : Change it to 24
 
-    public static void init(MainApplication applicationInstance) {
+    public static void init(MainApplication applicationInstance, String upload_url, LoggingLevel loggingLevel) {
         MyLog.applicationInstance = applicationInstance;
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
+        MyLog.uploadUrl = upload_url;
+        MyLog.loggingLevel = loggingLevel;
         Realm.init(applicationInstance.getCurrentApplication());
         libraryConfig = new RealmConfiguration.Builder()
                 .name("library.realm")
                 .modules(new RealmLoggingModule())
                 .build();
-        Realm.setDefaultConfiguration(libraryConfig);
         scheduleUploadJob();
     }
 
     public static void e(String message, String className) {
         Timber.tag(className);
         Timber.e(message);
-        saveLogToDBAsync(message, className);
+        if (loggingLevel == LoggingLevel.ERRORS_ONLY || loggingLevel == LoggingLevel.VERBOSE)
+            saveLogToDBAsync(message, className);
     }
 
     public static void d(String message, String className) {
         Timber.tag(className);
         Timber.d(message);
-        //saveLogToDBAsync(message, className);
+        if (loggingLevel == LoggingLevel.VERBOSE || loggingLevel == LoggingLevel.DEBUG_INFO_ONLY || loggingLevel == LoggingLevel.DEBUG_ONLY)
+            saveLogToDBAsync(message, className);
     }
 
     public static void i(String message, String className) {
         Timber.tag(className);
         Timber.i(message);
-        saveLogToDBAsync(message, className);
+        if (loggingLevel == LoggingLevel.VERBOSE || loggingLevel == LoggingLevel.DEBUG_INFO_ONLY)
+            saveLogToDBAsync(message, className);
     }
 
     public static void v(String message, String className) {
         Timber.tag(className);
         Timber.v(message);
-        saveLogToDBAsync(message, className);
+        if (loggingLevel == LoggingLevel.VERBOSE)
+            saveLogToDBAsync(message, className);
     }
 
     private static void saveLogToDBAsync(final String message, final String className) {
@@ -76,13 +81,14 @@ public class MyLog {
         }
     }
 
+    //Note: The minimum repeat interval that can be defined is 15 minutes (same as the JobScheduler API).
     private static void scheduleUploadJob() {
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .setRequiresBatteryNotLow(true)
                 .build();
         // TODO : Change the Repeat interval to HOURS (24)
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(UploadWorker.class, REPEAT_INTERVAL_HRS_UPLOAD_TASK, TimeUnit.SECONDS)
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(UploadWorker.class, REPEAT_INTERVAL_MINS_UPLOAD_TASK, TimeUnit.MINUTES)
                 .setConstraints(constraints)
                 .setBackoffCriteria(BackoffPolicy.LINEAR,
                         PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
@@ -94,5 +100,9 @@ public class MyLog {
 
     public static MainApplication getApplicationInstance() {
         return applicationInstance;
+    }
+
+    public static RealmConfiguration getLibraryConfig() {
+        return libraryConfig;
     }
 }

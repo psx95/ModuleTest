@@ -38,7 +38,7 @@ public class UploadWorker extends Worker {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try (Realm realm = Realm.getDefaultInstance()) {
+                try (Realm realm = Realm.getInstance(MyLog.getLibraryConfig())) {
                     RealmResults<RealmLogs> realmLogs = realm.where(RealmLogs.class).findAll();
                     final JSONArray jsonArray = new JSONArray();
                     for (RealmLogs logs : realmLogs) {
@@ -69,7 +69,7 @@ public class UploadWorker extends Worker {
     }
 
     private void deleteAllLogsFromRealm() {
-        try (Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getInstance(MyLog.getLibraryConfig())) {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(@NotNull Realm realm) {
