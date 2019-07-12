@@ -9,9 +9,12 @@ import com.psx.commons.Constants;
 import com.psx.commons.MainApplication;
 import com.psx.commons.Modules;
 import com.psx.commons.RxBus;
-import com.psx.logging.LoggingLevel;
 import com.psx.logging.Grove;
+import com.psx.logging.LoggingLevel;
 import com.psx.simplemaths.SimpleMath;
+
+import io.sentry.Sentry;
+import io.sentry.android.AndroidSentryClientFactory;
 
 public class MyApplication extends Application implements MainApplication {
 
@@ -22,6 +25,7 @@ public class MyApplication extends Application implements MainApplication {
     public void onCreate() {
         super.onCreate();
         eventBus = new RxBus();
+        Sentry.init(BuildConfig.sentry_dsn, new AndroidSentryClientFactory(getApplicationContext()));
         Grove.init(this, Constants.LOGS_UPLOAD_API, LoggingLevel.ERRORS_ONLY);
         AfterEffects.init(this);
         SimpleMath.init(this);
