@@ -3,6 +3,10 @@ package com.psx.commons;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
+/**
+ * An event bus built using RxJava. This event bus helps in inter-module communication
+ * by receiving messages from modules and transferring messages to relevant modules.
+ */
 public class RxBus {
     private PublishSubject<Object> bus = PublishSubject.create();
 

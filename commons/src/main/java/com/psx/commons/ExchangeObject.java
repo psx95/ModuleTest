@@ -1,5 +1,8 @@
 package com.psx.commons;
 
+/**
+ * Exchange object is used to exchange data between two modules.
+ */
 public class ExchangeObject {
     public Object[] data;
     public String type;
