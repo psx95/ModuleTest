@@ -13,8 +13,12 @@ android {
     }
     buildTypes {
         release {
+            buildConfigField 'String', "sentry_dsn", sentry_dsn
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            buildConfigField 'String', "sentry_dsn", sentry_dsn
         }
     }
 
