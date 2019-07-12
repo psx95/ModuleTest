@@ -9,9 +9,12 @@ import com.psx.commons.MainApplication;
 import com.psx.logging.RealmDB.RealmLoggingModule;
 import com.psx.logging.RealmDB.RealmLogs;
 
+import org.graylog2.gelfclient.GelfMessageLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.microedition.khronos.opengles.GL;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -27,11 +30,13 @@ public class Grove {
     private static final long INITIAL_DELAY_SECONDS_ONE_TIME_UPLOAD = 10;
     private static final String UPLOAD_TASK_NAME = "logs_upload";
 
+    //
     public static void init(MainApplication applicationInstance, String upload_url, LoggingLevel loggingLevel) {
         Grove.applicationInstance = applicationInstance;
         Grove.uploadUrl = upload_url;
         Grove.loggingLevel = loggingLevel;
         Grove.appName = initializeAppName();
+        Gelf.initGelf("157.230.135.58", LoggingLevel.DEBUG_INFO_ONLY);
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         Realm.init(applicationInstance.getCurrentApplication());
         libraryConfig = new RealmConfiguration.Builder()

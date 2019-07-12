@@ -39,4 +39,9 @@ dependencies {
     //Fast Android Networking
     implementation 'com.amitshekhar.android:jackson-android-networking:1.0.2'
     implementation 'com.amitshekhar.android:rx2-android-networking:1.0.2'
+
+    implementation 'org.slf4j:slf4j-nop:1.7.25'
+    implementation 'org.graylog2:gelfclient:1.4.4'
+    implementation 'io.netty:netty-transport:4.1.31.Final'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.9'
 }

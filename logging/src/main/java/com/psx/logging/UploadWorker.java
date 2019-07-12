@@ -14,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -46,21 +49,22 @@ public class UploadWorker extends Worker {
             public void run() {
                 try (Realm realm = Realm.getInstance(Grove.getLibraryConfig())) {
                     RealmResults<RealmLogs> realmLogs = realm.where(RealmLogs.class).findAll();
-                    final JSONArray jsonArray = new JSONArray();
-                    for (RealmLogs logs : realmLogs) {
-                        JSONObject jsonObject = convertRealmLogToJsonObject(logs);
-                        jsonArray.put(jsonObject);
+                    Map<String, Object> additionalFields = new HashMap<>();
+                    for (final RealmLogs log : realmLogs) {
+                        additionalFields.clear();
+                        additionalFields.put("timestamp", String.valueOf(log.timestamp));
+                        additionalFields.put("classname", String.valueOf(log.className));
+                        try {
+                            Gelf.sendGelfMessage(log.message, additionalFields);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    uploadLogs(jsonArray);
+                    //uploadLogs(jsonArray);
                 }
             }
         });
         thread.start();
-    }
-
-    //TODO :  Write method to convert
-    private JSONObject convertRealmLogToJsonObject(RealmLogs realmLogs) {
-        return new JSONObject();
     }
 
     private void uploadLogs(JSONArray jsonArray) {
